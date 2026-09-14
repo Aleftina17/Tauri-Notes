@@ -568,3 +568,9 @@ button {
 .resize-handle:hover {
     background: var(--accent);
 }
+
+.folder-select option,
+.editor-folder-select option {
+    background: var(--paper);
+    color: var(--text);
+}

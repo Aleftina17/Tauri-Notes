@@ -22,9 +22,10 @@ import Dialog, { type DialogState } from './Dialog'
 import { Pencil, Trash2, Pin, PinOff, X, Plus } from 'lucide-react'
 
 function stripHtml(html: string): string {
-    return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    const div = document.createElement('div')
+    div.innerHTML = html
+    return (div.textContent || '').replace(/\s+/g, ' ').trim()
 }
-
 function formatDate(iso: string): string {
     const d = new Date(iso.replace(' ', 'T') + 'Z')
     const now = new Date()
