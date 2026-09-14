@@ -1,0 +1,570 @@
+:root {
+    --font-serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Noto Serif", serif;
+    --font-sans: -apple-system, "Segoe UI", "Noto Sans", Roboto, Helvetica, Arial, sans-serif;
+
+    --ink-900: #1a1a1a;
+    --ink-700: #2c2c2a;
+    --paper: #f7f6f2;
+    --paper-dim: #efeeea;
+    --line: #dfded9;
+    --accent: #c0281c;
+    --accent-soft: #f0d4cd;
+    --highlight: #f2c400;
+    --highlight-text: #5a4400;
+    --text: #1a1a1a;
+    --text-soft: #6b6558;
+    --text-on-dark: #ffffff;
+    --text-on-dark-muted: #8a8578;
+    --danger: #8f1d14;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--text);
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+::selection {
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
+.app-shell {
+    display: flex;
+    height: 100vh;
+}
+
+/* ---------- Сайдбар с папками ---------- */
+
+.sidebar {
+    width: 200px;
+    background: var(--ink-900);
+    color: var(--text-on-dark);
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    color: #ffffff;
+    margin: 0 0 8px;
+}
+
+.folder-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 8px;
+}
+
+.folder-row:hover {
+    background: var(--ink-700);
+}
+
+.folder-row.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+.folder-row span {
+    flex: 1;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.folder-row button {
+    background: none;
+    border: none;
+    color: var(--text-on-dark-muted);
+    font-size: 12px;
+}
+
+.folder-row button:hover {
+    color: #fff;
+}
+
+.sidebar-static {
+    padding: 7px 8px;
+    cursor: pointer;
+}
+
+.sidebar-static:hover {
+    background: var(--ink-700);
+}
+
+.sidebar-static.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+.add-folder-btn {
+    margin-top: 12px;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ---------- Список заметок ---------- */
+
+.note-list-pane {
+    width: 320px;
+    border-right: 1px solid var(--line);
+    background: var(--paper-dim);
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.note-list-pane h1 {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-size: 22px;
+    margin: 0 0 4px;
+}
+
+.note-list-pane h1::after {
+    content: "";
+    display: block;
+    width: 46px;
+    height: 4px;
+    background: var(--accent);
+    margin: 8px 0 14px;
+}
+
+.search-input,
+.draft-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-size: 13px;
+}
+
+.search-input {
+    margin-bottom: 10px;
+}
+
+.search-input:focus,
+.draft-input:focus,
+.tags-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.new-note-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.new-note-row button {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 4px 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 8px;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.note-item:hover {
+    border-color: var(--line);
+}
+
+.note-item.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.note-item-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.note-item-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.note-item-snippet {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.note-item-date {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-top: 4px;
+    font-weight: 700;
+}
+
+.note-item-actions,
+.folder-row-actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.note-item:hover .note-item-actions,
+.folder-row:hover .folder-row-actions {
+    opacity: 1;
+}
+
+.note-item.active .note-item-actions {
+    opacity: 1;
+}
+
+.note-item-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text);
+}
+
+.empty-hint {
+    padding: 24px 8px;
+    color: var(--text-soft);
+    font-size: 13px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.drag-over {
+    background: var(--accent-soft) !important;
+    outline: 1px solid var(--accent);
+}
+
+.drag-preview {
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+    padding: 6px 12px;
+    background: #000;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    white-space: nowrap;
+}
+
+/* ---------- Редактор ---------- */
+
+.editor-pane {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.editor-header h2 {
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+}
+
+.editor-header button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
+
+.note-title-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 4px;
+    padding: 0;
+}
+
+.note-title-input:focus {
+    outline: none;
+}
+
+.note-title-input::placeholder {
+    color: var(--text-soft);
+    font-weight: 700;
+}
+
+.folder-select,
+.editor-folder-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M0 0 L5 6 L10 0 Z" fill="%231a1a1a"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding: 6px 28px 6px 10px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.editor-folder-select {
+    margin-bottom: 12px;
+    display: block;
+}
+
+.folder-select:hover,
+.editor-folder-select:hover {
+    border-color: var(--accent);
+}
+
+.folder-select:focus,
+.editor-folder-select:focus {
+    outline: 2px solid var(--accent-soft);
+}
+
+.tags-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.tags-display {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.toolbar {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+}
+
+.toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--text);
+    padding: 5px 8px;
+}
+
+.toolbar button:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+.toolbar button.is-active {
+    background: #000;
+    border-color: #000;
+    color: #fff;
+}
+
+.toolbar-sep {
+    width: 1px;
+    background: var(--line);
+    margin: 0 6px;
+}
+
+.editor-box {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    padding: 14px 18px;
+    min-height: 300px;
+    background: #fff;
+    font-family: var(--font-serif);
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.editor-box > div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.editor-box .ProseMirror {
+    flex: 1;
+}
+
+.ProseMirror:focus {
+    outline: none;
+}
+
+.ProseMirror code {
+    background: var(--highlight);
+    color: var(--highlight-text);
+    padding: 1px 6px;
+    font-family: monospace;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.ProseMirror code.copied {
+    background: var(--accent);
+    color: #fff;
+}
+
+.ProseMirror pre {
+    background: #000;
+    color: #fff;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.ProseMirror pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    cursor: text;
+}
+
+/* ---------- Диалоги ---------- */
+
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.dialog-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 20px 22px;
+    width: 320px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-card h3 {
+    margin: 0 0 8px;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.dialog-message {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.4;
+}
+
+.dialog-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.dialog-input:focus {
+    outline: 2px solid var(--accent-soft);
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.dialog-btn-secondary {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--text);
+}
+
+.dialog-btn-primary {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    background: #000;
+    color: #fff;
+}
+
+.dialog-btn-primary.danger {
+    background: var(--danger);
+}
+
+.resize-handle {
+    width: 4px;
+    flex-shrink: 0;
+    cursor: col-resize;
+    background: transparent;
+}
+
+.resize-handle:hover {
+    background: var(--accent);
+}
