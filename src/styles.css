@@ -211,6 +211,7 @@ button {
 .note-item-main {
     flex: 1;
     min-width: 0;
+    padding-right: 46px;
 }
 
 .note-item-title {
@@ -220,9 +221,14 @@ button {
     font-weight: 700;
     font-size: 14px;
     color: var(--text);
-    white-space: nowrap;
+}
+
+.note-item-title span {
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .note-item-snippet {
@@ -249,12 +255,6 @@ button {
     display: flex;
     gap: 2px;
     padding: 3px;
-    /* Раньше был ещё backdrop-filter: blur(3px) - убран: на webkit2gtk (Linux)
-       он создаёт отдельный композитный слой, который при частой перерисовке
-       списка (например, при переключении папок) иногда не успевает корректно
-       перерисоваться поверх предыдущего кадра - визуально это выглядело как
-       "двоящийся"/жирнеющий текст под панелью действий. Фон сделан более
-       непрозрачным, чтобы сохранить читаемость без блюра. */
     background: rgba(247, 246, 242, 0.97);
     box-shadow: 0 1px 6px rgba(26, 26, 26, 0.18);
     opacity: 0;
