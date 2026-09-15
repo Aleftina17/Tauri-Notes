@@ -18,6 +18,7 @@ import {
     type Tag,
 } from './db'
 import Editor from './Editor'
+import Select from './Select'
 import Dialog, { type DialogState } from './Dialog'
 import { Pencil, Trash2, Pin, PinOff, X, Plus } from 'lucide-react'
 
@@ -445,20 +446,18 @@ function App() {
                             placeholder="Без названия"
                         />
 
-                        <select
-                            className="folder-select editor-folder-select"
-                            value={noteFolderId ?? ''}
-                            onChange={(e) =>
-                                handleNoteFolderChange(e.target.value === '' ? null : Number(e.target.value))
-                            }
-                        >
-                            <option value="">Без папки</option>
-                            {folders.map((folder) => (
-                                <option key={folder.id} value={folder.id}>
-                                    {folder.name}
-                                </option>
-                            ))}
-                        </select>
+                        <Select
+                            className="editor-folder-select"
+                            value={noteFolderId != null ? String(noteFolderId) : ''}
+                            onChange={(v) => handleNoteFolderChange(v === '' ? null : Number(v))}
+                            options={[
+                                { value: '', label: 'Без папки' },
+                                ...folders.map((folder) => ({
+                                    value: String(folder.id),
+                                    label: folder.name,
+                                })),
+                            ]}
+                        />
 
                         <input
                             className="tags-input"

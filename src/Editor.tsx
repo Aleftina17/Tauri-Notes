@@ -1,6 +1,8 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import { useEffect } from 'react'
 import {
     Bold,
@@ -11,6 +13,7 @@ import {
     Heading2,
     List,
     ListOrdered,
+    ListChecks,
     Quote,
     Code,
     FileCode,
@@ -28,6 +31,8 @@ export default function Editor({ content, onChange }: Props) {
                 heading: { levels: [1, 2] },
             }),
             Underline,
+            TaskList,
+            TaskItem.configure({ nested: true }),
         ],
         content: content,
         onUpdate: ({ editor }) => {
@@ -121,6 +126,13 @@ export default function Editor({ content, onChange }: Props) {
                     title="Нумерованный список"
                 >
                     <ListOrdered size={15} />
+                </button>
+                <button
+                    className={editor.isActive('taskList') ? 'is-active' : ''}
+                    onClick={() => editor.chain().focus().toggleTaskList().run()}
+                    title="Чек-лист"
+                >
+                    <ListChecks size={15} />
                 </button>
                 <button
                     className={editor.isActive('blockquote') ? 'is-active' : ''}
