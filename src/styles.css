@@ -249,9 +249,13 @@ button {
     display: flex;
     gap: 2px;
     padding: 3px;
-    background: rgba(247, 246, 242, 0.9);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    /* Раньше был ещё backdrop-filter: blur(3px) - убран: на webkit2gtk (Linux)
+       он создаёт отдельный композитный слой, который при частой перерисовке
+       списка (например, при переключении папок) иногда не успевает корректно
+       перерисоваться поверх предыдущего кадра - визуально это выглядело как
+       "двоящийся"/жирнеющий текст под панелью действий. Фон сделан более
+       непрозрачным, чтобы сохранить читаемость без блюра. */
+    background: rgba(247, 246, 242, 0.97);
     box-shadow: 0 1px 6px rgba(26, 26, 26, 0.18);
     opacity: 0;
     pointer-events: none;
@@ -274,7 +278,7 @@ button {
 .note-item.active .note-item-actions {
     opacity: 1;
     pointer-events: auto;
-    background: rgba(240, 212, 205, 0.95);
+    background: rgba(240, 212, 205, 0.98);
 }
 
 .note-item-actions button {
@@ -565,6 +569,31 @@ button {
     color: inherit;
     padding: 0;
     cursor: text;
+}
+
+/* ---------- Блок кода: кнопка копирования всего блока (правка №3) ---------- */
+
+.code-block-wrapper {
+    position: relative;
+}
+
+.code-block-copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.code-block-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
 }
 
 .ProseMirror ul[data-type="taskList"] {

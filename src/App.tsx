@@ -59,6 +59,8 @@ function App() {
     const pendingFields = useRef<{ title?: string; content?: string }>({})
     const titleInputRef = useRef<HTMLInputElement>(null)
 
+    const loadedContentRef = useRef<{ id: number; title: string; content: string } | null>(null)
+
     useEffect(() => {
         refreshFolders()
         refreshAllTags()
@@ -114,7 +116,7 @@ function App() {
         function onMouseUp() {
             document.removeEventListener('mousemove', onMouseMove)
             document.removeEventListener('mouseup', onMouseUp)
-            document.body.style.userSelect = previousUserSelect // возвращаем как было
+            document.body.style.userSelect = previousUserSelect
         }
 
         document.addEventListener('mousemove', onMouseMove)
@@ -151,6 +153,7 @@ function App() {
         setEditText('')
         setTitleText('')
         setNoteFolderId(folderId)
+        loadedContentRef.current = { id, title: '', content: '' }
         setTimeout(() => titleInputRef.current?.focus(), 0)
     }
 
@@ -191,6 +194,7 @@ function App() {
         setEditText(note.content)
         setTitleText(note.title)
         setNoteFolderId(note.folder_id)
+        loadedContentRef.current = { id: note.id, title: note.title, content: note.content }
     }
 
     function closeEditor() {
@@ -198,6 +202,7 @@ function App() {
         setEditText('')
         setTitleText('')
         setNoteFolderId(null)
+        loadedContentRef.current = null
     }
 
     function scheduleSave(id: number, fields: { title?: string; content?: string }) {
@@ -212,13 +217,22 @@ function App() {
     }
 
     function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setTitleText(e.target.value)
-        if (selectedId != null) scheduleSave(selectedId, { title: e.target.value })
+        const value = e.target.value
+        setTitleText(value)
+        if (selectedId == null) return
+        if (loadedContentRef.current?.id === selectedId && loadedContentRef.current.title === value) {
+            return
+        }
+        scheduleSave(selectedId, { title: value })
     }
 
     function handleEditorChange(text: string) {
         setEditText(text)
-        if (selectedId != null) scheduleSave(selectedId, { content: text })
+        if (selectedId == null) return
+        if (loadedContentRef.current?.id === selectedId && loadedContentRef.current.content === text) {
+            return
+        }
+        scheduleSave(selectedId, { content: text })
     }
 
     async function handleNoteFolderChange(folderId: number | null) {
@@ -252,6 +266,7 @@ function App() {
             setEditText('')
             setTitleText('')
             setNoteFolderId(null)
+            loadedContentRef.current = null
         }
         await refreshNotes()
         await refreshAllTags()
@@ -382,46 +397,48 @@ function App() {
                         </div>
                     )}
 
-                    {notes.map((note) => (
-                        <div
-                            key={note.id}
-                            className={`note-item${selectedId === note.id ? ' active' : ''}`}
-                            onClick={() => selectNote(note)}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, note)}
-                        >
-                            <div className="note-item-main">
-                                <div className="note-item-title">
-                                    {note.is_pinned ? <Pin size={12} /> : null}
-                                    <span>{note.title || 'Без названия'}</span>
+                    <div key={`${selectedFolderId ?? 'x'}-${selectedTagId ?? 'x'}`}>
+                        {notes.map((note) => (
+                            <div
+                                key={note.id}
+                                className={`note-item${selectedId === note.id ? ' active' : ''}`}
+                                onClick={() => selectNote(note)}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, note)}
+                            >
+                                <div className="note-item-main">
+                                    <div className="note-item-title">
+                                        {note.is_pinned ? <Pin size={12} /> : null}
+                                        <span>{note.title || 'Без названия'}</span>
+                                    </div>
+                                    <div className="note-item-snippet">
+                                        {stripHtml(note.content) || 'Пусто'}
+                                    </div>
+                                    <div className="note-item-date">{formatDate(note.updated_at)}</div>
                                 </div>
-                                <div className="note-item-snippet">
-                                    {stripHtml(note.content) || 'Пусто'}
+                                <div className="note-item-actions">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleTogglePin(note)
+                                        }}
+                                        title="Закрепить"
+                                    >
+                                        {note.is_pinned ? <PinOff size={14} /> : <Pin size={14} />}
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            removeNote(note.id, note.title)
+                                        }}
+                                        title="Удалить"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
                                 </div>
-                                <div className="note-item-date">{formatDate(note.updated_at)}</div>
                             </div>
-                            <div className="note-item-actions">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleTogglePin(note)
-                                    }}
-                                    title="Закрепить"
-                                >
-                                    {note.is_pinned ? <PinOff size={14} /> : <Pin size={14} />}
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        removeNote(note.id, note.title)
-                                    }}
-                                    title="Удалить"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </section>
 
                 <div
